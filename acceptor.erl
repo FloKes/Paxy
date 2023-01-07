@@ -1,6 +1,10 @@
 -module(acceptor).
 -export([start/2]).
 
+
+-define(delay, 300).
+  
+% paxy:start([1000, 3000, 2000]).
 start(Name, PanelId) ->
   spawn(fun() -> init(Name, PanelId) end).
         
@@ -15,7 +19,16 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
     {prepare, Proposer, Round} ->
       case order:gr(Round, Promised) of
         true ->
-          Proposer ! {promise, Round, Voted, Value},               
+          Message = {promise, Round, Voted, Value},
+          % basic
+          % Proposer ! Message,               
+
+          % With delay
+          T = rand:uniform(?delay),
+          timer:send_after(T, Proposer, Message),
+          % io:format("[Acceptor ~w] Phase 2: Send after ~w ~n",
+          %        [Name, T]),
+
       io:format("[Acceptor ~w] Phase 1: promised ~w voted ~w colour ~w~n",
                  [Name, Round, Voted, Value]),
           % Update gui
@@ -30,7 +43,14 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
     {accept, Proposer, Round, Proposal} ->
       case order:goe(Round, Promised) of
         true ->
-          Proposer ! {vote, Round},
+          Message = {vote, Round},
+          % basic
+          %Proposer ! Message,
+
+          % delay
+          T = rand:uniform(?delay),
+          timer:send_after(T, Proposer, Message),
+
           case order:goe(Round, Voted) of
             true ->
               io:format("[Acceptor ~w] Phase 2: promised ~w voted ~w colour ~w~n",
