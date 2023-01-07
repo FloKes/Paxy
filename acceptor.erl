@@ -34,9 +34,9 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
           case order:goe(Round, Voted) of
             true ->
               io:format("[Acceptor ~w] Phase 2: promised ~w voted ~w colour ~w~n",
-                 [Name, Promised, Voted, Proposal]),
+                 [Name, Promised, Round, Proposal]),
               % Update gui
-              PanelId ! {updateAcc, "Voted: " ++ io_lib:format("~p", [Voted]), 
+              PanelId ! {updateAcc, "Voted: " ++ io_lib:format("~p", [Round]), 
                          "Promised: " ++ io_lib:format("~p", [Promised]), Proposal},
               acceptor(Name, Promised, Round, Proposal, PanelId);
             false ->
