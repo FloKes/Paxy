@@ -4,15 +4,32 @@
 -define(RED, {255,0,0}).
 -define(BLUE, {0,0,255}).
 -define(GREEN, {0,255,0}).
+-define(YELLOW, {255,255,0}).
+-define(MAGENTA, {255,0,255}).
 
 % Sleep is a list with the initial sleep time for each proposer
 start(Sleep) ->
+  % ------ OLD------
   AcceptorNames = ["Acceptor a", "Acceptor b", "Acceptor c", "Acceptor d", 
                    "Acceptor e"],
-  AccRegister = [a, b, c, d, e],
+  AccRegister = [a, b, c, d, e, f],
+
+  % % ------ NEW ------
+  % AcceptorNames = ["Acceptor a", "Acceptor b", "Acceptor c", "Acceptor d", 
+  %                  "Acceptor e", "Acceptor f", "Acceptor g", "Acceptor h"],
+  % AccRegister = [a, b, c, d, e, f, g, h],
+
+  % ------ OLD ------
+  % ProposerNames = [{"Proposer kurtz", ?RED}, {"Proposer kilgore", ?GREEN}, 
+  %                  {"Proposer willard", ?BLUE}],
+  % PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}],
+
+  % ------ NEW ------
   ProposerNames = [{"Proposer kurtz", ?RED}, {"Proposer kilgore", ?GREEN}, 
-                   {"Proposer willard", ?BLUE}],
-  PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}],
+                   {"Proposer willard", ?BLUE}, {"Proposer  florian", ?YELLOW}, {"Proposer kesten", ?MAGENTA}],
+  PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}, {florian, ?YELLOW}, {kesten, ?MAGENTA}],
+  
+
   register(gui, spawn(fun() -> gui:start(AcceptorNames, ProposerNames) end)),
   gui ! {reqState, self()},
   receive
@@ -64,6 +81,10 @@ stop() ->
   stop(c),
   stop(d),
   stop(e),
+  % % NEW
+  % stop(f),
+  % stop(g),
+  % stop(h),
   stop(gui).
 
 stop(Name) ->

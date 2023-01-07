@@ -3,7 +3,7 @@
 
 
 -define(delay, 1).
--define(drop, 5).
+-define(drop, -1).
 
   
 % paxy:start([1000, 3000, 2000]).
