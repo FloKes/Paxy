@@ -17,7 +17,7 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
         true ->
           Proposer ! {promise, Round, Voted, Value},               
       io:format("[Acceptor ~w] Phase 1: promised ~w voted ~w colour ~w~n",
-                 [Name, Promised, Voted, Value]),
+                 [Name, Round, Voted, Value]),
           % Update gui
           Colour = case Value of na -> {0,0,0}; _ -> Value end,
           PanelId ! {updateAcc, "Voted: " ++ io_lib:format("~p", [Voted]), 
