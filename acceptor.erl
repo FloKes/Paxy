@@ -26,12 +26,12 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
               io:format("message dropped~n");
             true ->
               Message = {promise, Round, Voted, Value},
-              % basic
-              % Proposer ! Message,               
+              %% basic
+              Proposer ! Message               
 
-              % With delay
-              T = rand:uniform(?delay),
-              timer:send_after(T, Proposer, Message)
+              % % With delay
+              % T = rand:uniform(?delay),
+              % timer:send_after(T, Proposer, Message)
           end,
 
           io:format("[Acceptor ~w] Phase 1: promised ~w voted ~w colour ~w~n",
@@ -42,7 +42,7 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
                      "Promised: " ++ io_lib:format("~p", [Round]), Colour},
           acceptor(Name, Round, Voted, Value, PanelId);
         false ->
-          %Proposer ! {sorry, {prepare, Round}},
+          Proposer ! {sorry, {prepare, Round}},
           acceptor(Name, Promised, Voted, Value, PanelId)
       end;
     {accept, Proposer, Round, Proposal} ->
@@ -54,7 +54,7 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
             true ->
               Message = {vote, Round},
               % basic
-              %Proposer ! Message,
+              %Proposer ! Message
 
               % delay
               T = rand:uniform(?delay),
@@ -73,7 +73,7 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
               acceptor(Name, Promised, Voted, Value, PanelId)
           end;                            
         false ->
-          %Proposer ! {sorry, {accept, Round}},
+          Proposer ! {sorry, {accept, Round}},
           acceptor(Name, Promised, Voted, Value, PanelId)
       end;
     stop ->
