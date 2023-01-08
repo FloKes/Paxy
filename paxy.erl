@@ -15,12 +15,12 @@ start(Sleep) ->
   
 start_remote_proposers(Sleep) ->
   PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}],
-  AccRegister = [{a, ?acc_node}, {b, ?acc_node}, {c, ?acc_node}, {d, ?acc_node}, {e, ?acc_node}],
+  AccRegisterRemote = [{a, ?acc_node}, {b, ?acc_node}, {c, ?acc_node}, {d, ?acc_node}, {e, ?acc_node}],
   {gui, ?acc_node} ! {reqState, self()},
   receive
 	{reqState, State} ->
 		{_, PropIds} = State,
-		start_proposers(PropIds, PropInfo, AccRegister, Sleep, self()),
+		start_proposers(PropIds, PropInfo, AccRegisterRemote, Sleep, self()),
 		wait_proposers(length(PropIds))
   end.
   
