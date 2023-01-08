@@ -4,9 +4,6 @@
 -define(RED, {255,0,0}).
 -define(BLUE, {0,0,255}).
 -define(GREEN, {0,255,0}).
--define(YELLOW, {255,255,0}).
--define(MAGENTA, {255,0,255}).
--define(PURPLE, {159, 43, 104}).
 
 % Sleep is a list with the initial sleep time for each proposer
 start(Sleep) ->
