@@ -14,6 +14,9 @@ init(Name, PanelId) ->
   Promised = order:null(), 
   Voted = order:null(),
   Value = na,
+  pers:open(Name),
+  pers:store(Name, Promised, Voted, Value, PanelId),
+  pers:close(Name),
   acceptor(Name, Promised, Voted, Value, PanelId).
 
 acceptor(Name, Promised, Voted, Value, PanelId) ->
@@ -78,5 +81,6 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
       end;
     stop ->
       PanelId ! stop,
+      pers:delete(Name),
       ok
   end.

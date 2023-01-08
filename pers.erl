@@ -2,6 +2,7 @@
 -export([open/1, read/1, store/5, close/1, delete/1]).
 
 %% dets module provides term storage on file
+% paxy:start([1000, 3000, 2000]).
 
 open(Name) ->
     dets:open_file(Name, []).
