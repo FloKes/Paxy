@@ -24,15 +24,17 @@ start(Sleep) ->
   receive
     {reqState, State} ->
       {AccIds, PropIds} = State,
-      spawn(?acc_node, fun() -> start_acceptors(AccIds, AccRegister) end),
-      spawn(fun() -> 
-        Begin = erlang:monotonic_time(),
-        spawn(?prop_node, fun() -> start_proposers(PropIds, PropInfo, AccRegisterRemote, Sleep, self()) end),
-        wait_proposers(length(PropIds)),
-        End = erlang:monotonic_time(),
-        Elapsed = erlang:convert_time_unit(End-Begin, native, millisecond),
-        io:format("[Paxy] Total elapsed time: ~w ms~n", [Elapsed])
-      end)
+        spawn(?acc_node, fun() -> start_acceptors(AccIds, AccRegister) end),
+        % start_acceptors(AccIds, AccRegister),
+        spawn(fun() -> 
+            Begin = erlang:monotonic_time(),
+            spawn(?prop_node, fun() -> start_proposers(PropIds, PropInfo, AccRegisterRemote, Sleep, self()) end),
+            % start_proposers(PropIds, PropInfo, AccRegister, Sleep, self()),
+            wait_proposers(length(PropIds)),
+            End = erlang:monotonic_time(),
+            Elapsed = erlang:convert_time_unit(End-Begin, native, millisecond),
+            io:format("[Paxy] Total elapsed time: ~w ms~n", [Elapsed])
+        end)
   end.
 
     
@@ -44,7 +46,7 @@ start_acceptors(AccIds, AccReg) ->
       [RegName|RegNameRest] = AccReg,
       register(RegName, acceptor:start(RegName, AccId)),
 
-	  io:format("[Acceptor ~w] registered with Gui id: ~w, self:~w ~n",[RegName, AccId, self()]),
+	%   io:format("[Acceptor ~w] registered with Gui id: ~w, self:~w ~n",[RegName, AccId, self()]),
       start_acceptors(Rest, RegNameRest)
   end.
 
@@ -56,7 +58,7 @@ start_proposers(PropIds, PropInfo, Acceptors, Sleep, Main) ->
       [{RegName, Colour}|RestInfo] = PropInfo,
       [FirstSleep|RestSleep] = Sleep,
       proposer:start(RegName, Colour, Acceptors, FirstSleep, PropId, Main),
-      io:format("[Proposer ~w] started with Gui id: ~w, self:~w ~n",[RegName, PropId, self()]),
+    %   io:format("[Proposer ~w] started with Gui id: ~w, self:~w ~n",[RegName, PropId, self()]),
       start_proposers(Rest, RestInfo, Acceptors, RestSleep, Main)
   end.
 

@@ -10,6 +10,7 @@ start(Name, PanelId) ->
   spawn(fun() -> init(Name, PanelId) end).
         
 init(Name, PanelId) ->
+  io:format("[Acceptor ~w] initialized with Gui id: ~w, self:~w ~n",[Name, PanelId, self()]),
   Promised = order:null(), 
   Voted = order:null(),
   Value = na,

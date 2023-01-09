@@ -8,6 +8,7 @@ start(Name, Proposal, Acceptors, Sleep, PanelId, Main) ->
   spawn(fun() -> init(Name, Proposal, Acceptors, Sleep, PanelId, Main) end).
 
 init(Name, Proposal, Acceptors, Sleep, PanelId, Main) ->
+  io:format("[Proposer ~w] initialized with Gui id: ~w, self:~w ~n",[Name, PanelId, self()]),
   timer:sleep(Sleep),
   Begin = erlang:monotonic_time(),
   Round = order:first(Name),
