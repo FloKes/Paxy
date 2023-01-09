@@ -2,8 +2,6 @@
 -export([start/2]).
   
 % paxy:start([1000, 3000, 2000]).
-% paxy_remote:start([1000, 3000, 2000], 'paxy-acc@localhost', 'paxy-prop@localhost').
-% paxy_remote:start([1000, 3000, 2000], 'paxy-acc@127.0.0.1', 'paxy-prop@127.0.0.1').
 % erl -name paxy@127.0.0.1
 % erl -name paxy-acc@127.0.0.1
 % erl -name paxy-prop@127.0.0.1
