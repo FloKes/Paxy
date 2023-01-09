@@ -1,4 +1,4 @@
--module(paxy).
+-module(paxy_alt).
 -export([start/1, stop/0, stop/1]).
 
 -define(RED, {255,0,0}).
@@ -18,27 +18,23 @@ start(Sleep) ->
                    {"Proposer willard", ?BLUE}],
   PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}],
 
-  spawn(?acc_node, fun() -> start_remote_acceptors(AcceptorNames, AccRegister, ProposerNames) end),
-  spawn(?prop_node, fun() -> start_remote_proposers(Sleep, PropInfo, AccRegisterRemote) end).
-  
-  
-start_remote_proposers(Sleep, PropInfo, AccRegisterRemote) ->
-  {gui, ?acc_node} ! {reqState, self()},
-  receive
-	{reqState, State} ->
-		{_, PropIds} = State,
-		start_proposers(PropIds, PropInfo, AccRegisterRemote, Sleep, self()),
-		wait_proposers(length(PropIds))
-  end.
-  
-start_remote_acceptors(AcceptorNames, AccRegister, ProposerNames) ->
   register(gui, spawn(fun() -> gui:start(AcceptorNames, ProposerNames) end)),
+  io:format("Registered gui self:~w ~n",[self()]),
   gui ! {reqState, self()},
   receive
-	{reqState, State} ->
-		{AccIds, _} = State,
-		start_acceptors(AccIds, AccRegister)
+    {reqState, State} ->
+      {AccIds, PropIds} = State,
+      spawn(?acc_node, fun() -> start_acceptors(AccIds, AccRegister) end),
+      spawn(fun() -> 
+        Begin = erlang:monotonic_time(),
+        spawn(?prop_node, fun() -> start_proposers(PropIds, PropInfo, AccRegisterRemote, Sleep, self()) end),
+        wait_proposers(length(PropIds)),
+        End = erlang:monotonic_time(),
+        Elapsed = erlang:convert_time_unit(End-Begin, native, millisecond),
+        io:format("[Paxy] Total elapsed time: ~w ms~n", [Elapsed])
+      end)
   end.
+
     
 start_acceptors(AccIds, AccReg) ->
   case AccIds of
@@ -47,7 +43,8 @@ start_acceptors(AccIds, AccReg) ->
     [AccId|Rest] ->
       [RegName|RegNameRest] = AccReg,
       register(RegName, acceptor:start(RegName, AccId)),
-	    io:format("[Acceptor ~w] registered with id ~w ~n",[RegName,AccId]),
+
+	  io:format("[Acceptor ~w] registered with Gui id: ~w, self:~w ~n",[RegName, AccId, self()]),
       start_acceptors(Rest, RegNameRest)
   end.
 
@@ -58,8 +55,8 @@ start_proposers(PropIds, PropInfo, Acceptors, Sleep, Main) ->
     [PropId|Rest] ->
       [{RegName, Colour}|RestInfo] = PropInfo,
       [FirstSleep|RestSleep] = Sleep,
-      io:format("[Proposer ~w] starter with id ~w ~n",[RegName,PropId]),
-      proposer:start(RegName, Colour, Acceptors, FirstSleep, PropId, Main),	
+      proposer:start(RegName, Colour, Acceptors, FirstSleep, PropId, Main),
+      io:format("[Proposer ~w] started with Gui id: ~w, self:~w ~n",[RegName, PropId, self()]),
       start_proposers(Rest, RestInfo, Acceptors, RestSleep, Main)
   end.
 
