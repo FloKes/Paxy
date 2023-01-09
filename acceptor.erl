@@ -7,6 +7,7 @@
 
   
 % paxy:start([1000, 3000, 2000]).
+% paxy:crash(b).
 start(Name, PanelId) ->
   spawn(fun() -> init(Name, PanelId) end).
         
