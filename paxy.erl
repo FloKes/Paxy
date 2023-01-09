@@ -10,19 +10,19 @@
 
 % Sleep is a list with the initial sleep time for each proposer
 start(Sleep) ->
-  % % ------ OLD------
-  % AcceptorNames = ["Acceptor a", "Acceptor b", "Acceptor c", "Acceptor d", 
-  %                  "Acceptor e"],
-  % AccRegister = [a, b, c, d, e],
+  % ------ OLD------
+  AcceptorNames = ["Acceptor a", "Acceptor b", "Acceptor c", "Acceptor d", 
+                   "Acceptor e"],
+  AccRegister = [a, b, c, d, e],
 
   %   % ------ NEW max ------
   % AcceptorNames = ["Acceptor a", "Acceptor b", "Acceptor c", "Acceptor d", 
   %                  "Acceptor e", "Acceptor f", "Acceptor g", "Acceptor h"],
   % AccRegister = [a, b, c, d, e, f, g, h],
 
-  % ------ NEW ------
-  AcceptorNames = ["Acceptor a"],
-  AccRegister = [a],
+  %% ------ NEW ------
+  % AcceptorNames = ["Acceptor a"],
+  % AccRegister = [a],
 
   % ------ OLD ------
   % ProposerNames = [{"Proposer kurtz", ?RED}, {"Proposer kilgore", ?GREEN}, 
@@ -32,9 +32,9 @@ start(Sleep) ->
   % ------ NEW ------
   ProposerNames = [{"Proposer kurtz", ?RED}, {"Proposer kilgore", ?GREEN}, 
                    {"Proposer willard", ?BLUE}, {"Proposer  florian", ?YELLOW}, {"Proposer kesten", ?MAGENTA}, 
-                   {"Proposer stjepan", ?PURPLE}],
+                   {"Proposer stjepan", ?PURPLE}, {"Proposer marco", ?PURPLE}, {"Proposer gordon", ?PURPLE}],
   PropInfo = [{kurtz, ?RED}, {kilgore, ?GREEN}, {willard, ?BLUE}, {florian, ?YELLOW}, {kesten, ?MAGENTA},
-           {stjepan, ?PURPLE}],
+           {stjepan, ?PURPLE}, {marco, ?PURPLE}, {gordon, ?PURPLE}],
   
 
   register(gui, spawn(fun() -> gui:start(AcceptorNames, ProposerNames) end)),
@@ -86,8 +86,8 @@ stop() ->
   stop(a),
   stop(b),
   stop(c),
-  % stop(d),
-  % stop(e),
+  stop(d),
+  stop(e),
   % NEW
   % stop(f),
   % stop(g),
