@@ -1,12 +1,10 @@
 -module(acceptor).
 -export([start/2]).
 
-
--define(delay, 1).
--define(drop, -1).
+-define(drop, 7).
 
   
-% paxy:start([1000, 3000, 2000]).
+% paxy:start([100, 300, 200]).
 start(Name, PanelId) ->
   spawn(fun() -> init(Name, PanelId) end).
         
@@ -21,17 +19,13 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
     {prepare, Proposer, Round} ->
       case order:gr(Round, Promised) of
         true ->
-          P = rand:uniform(10),
+          % P = rand:uniform(10),
+          P = 100,
           if P =< ?drop ->
-              io:format("message dropped~n");
+              io:format("message dropped promise ~n");
             true ->
               Message = {promise, Round, Voted, Value},
-              %% basic
               Proposer ! Message               
-
-              % % With delay
-              % T = rand:uniform(?delay),
-              % timer:send_after(T, Proposer, Message)
           end,
 
           io:format("[Acceptor ~w] Phase 1: promised ~w voted ~w colour ~w~n",
@@ -50,15 +44,10 @@ acceptor(Name, Promised, Voted, Value, PanelId) ->
         true ->
           P = rand:uniform(10),
           if P =< ?drop ->
-              io:format("message dropped~n");
+              io:format("message dropped accept ~n");
             true ->
               Message = {vote, Round},
-              % basic
-              %Proposer ! Message
-
-              % delay
-              T = rand:uniform(?delay),
-              timer:send_after(T, Proposer, Message)    
+              Proposer ! Message   
           end,
           
           case order:goe(Round, Voted) of
